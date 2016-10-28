@@ -1572,12 +1572,17 @@ echo "spool /root/msf_console.log" > /root/.msf4/msfconsole.rc \
 apt -y -qq install apache2 php git \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/cheetz/Easy-P.git /opt/Easy-P-git/ \
+  || echo -e ' '${RED}'[!] Issue when git cloning Easy-P'${RESET} 1>&2
 git clone -q -b master https://github.com/cheetz/Password_Plus_One.git /opt/Password_Plus_One-git/ \
+  || echo -e ' '${RED}'[!] Issue when git cloning Password_Plus_One'${RESET} 1>&2
 git clone -q -b master https://github.com/cheetz/PowerShell_Popup.git /opt/PowerShell_Popup-git/ \
+  || echo -e ' '${RED}'[!] Issue when git cloning PowerShell_Popup'${RESET} 1>&2
 git clone -q -b master https://github.com/cheetz/icmpshock.git /opt/icmpshock-git/ \
+  || echo -e ' '${RED}'[!] Issue when git cloning icmpshock'${RESET} 1>&2
 git clone -q -b master https://github.com/cheetz/brutescrape.git /opt/brutescrape-git/ \
+  || echo -e ' '${RED}'[!] Issue when git cloning brutescrape'${RESET} 1>&2
 git clone -q -b master https://www.github.com/cheetz/reddit_xss.git /opt/reddit_xss-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+  || echo -e ' '${RED}'[!] Issue when git cloning reddit_xss'${RESET} 1>&2
 
 ##### Install the backdoor factory
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Backdoor Factory${RESET} ~ bypassing anti-virus"
