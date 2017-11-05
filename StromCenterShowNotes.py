@@ -1,3 +1,7 @@
+#!/usr/bin/python3
+# Script to download show notes from sans strom center podcast
+# Asks users for number of episodes to download
+# Creates html file output
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 import re
