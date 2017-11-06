@@ -39,8 +39,9 @@ def CountShowIds(epiCount,lepiID):
 # parse url and extract data
 def SansParsers(urlList):
     #print(urlList)
-    sys.stdout = open("sans.html", "w")
-
+    # sys.stdout = open("sans.html", "w")
+    result = ''
+    numberOfResults = 0
     for url in urlList:
         # print(url)
         uClient = uReq(url)
@@ -55,8 +56,8 @@ def SansParsers(urlList):
 
         heading = []
         links = []
-        counter =0
 
+        counter = 0
         for i in showNotes.contents:
             if i != ' ':
                 try:
@@ -66,16 +67,21 @@ def SansParsers(urlList):
                     links = dailyLinks[counter].text
                     # Extract Date of episode
                     date = page_soup.h2.text.split(',')[1].strip()
-                    print("* %s - <a href='%s' target=_blank>%s</a><br />" %(date,links,header))
+                    print("* %s - <a href='%s' target=_blank>%s</a><br />" % (date, links, header))
+                    result += "* %s - <a href='%s' target=_blank>%s</a><br />" %(date,links,header)
                     counter +=1
+                    numberOfResults +=1
 
                 except:
                     continue
 
-    sys.stdout.close()
+    # sys.stdout.close()
+    TempFile = open("SANS.html", "w")
+    TempFile.write(result)
+    TempFile.close()
 
     #showInfo = date,header,links,lepiID
-    return()
+    return(numberOfResults)
 
 def main():
     epiCount = int(input("How many episodes you want to download?"))
@@ -84,7 +90,8 @@ def main():
     print("[*] Latest Sans EpisodeID is ", lepiID)
     urlList=CountShowIds(epiCount,lepiID)
     print("[*] Downloading Urls! Hang Tight!")
-    SansParsers(urlList)
+    numberOfResults = SansParsers(urlList)
+    print("[*] Finished ", numberOfResults, "completed!")
 
 
 if __name__ == main():
