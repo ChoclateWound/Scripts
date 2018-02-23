@@ -1,0 +1,76 @@
+version: '2'
+services:
+        lair:
+                hostname: lair
+                container_name: lair_lair
+                build:
+                        context: ./app/
+                        dockerfile: Dockerfile
+                restart: always
+                links:
+                        - lairdb
+                depends_on:
+                        - lairdb
+                        - lairsetup
+        lairapi:
+                hostname: lairapi
+                container_name: lair_api
+                build:
+                        context: ./api/
+                        dockerfile: Dockerfile
+                restart: always
+                links:
+                        - lairdb
+                depends_on:
+                        - lairdb
+                        - lairsetup
+                volumes:
+                        - $HOME/.lair/files:/files
+        caddy:
+                hostname: caddy
+                container_name: lair_caddy
+                build:
+                        context: ./proxy/
+                        dockerfile: Dockerfile
+                links:
+                        - lair
+                        - lairapi
+                        - lairdb
+                ports:
+                        - "11012-11013:11012-11013"
+                depends_on:
+                        - lair
+                        - lairapi
+                        - lairsetup
+                restart: always
+        ngrok:
+                hostname: ngrok
+                container_name: lair_ngrok
+                build:
+                        context: ./ngrok/
+                        dockerfile: Dockerfile
+                links:
+                        - caddy
+                environment:
+                        HTTPS_LISTENER: caddy:11013
+                        ENABLED: 0
+                        AUTH_TOKEN: "[Find your auth token at: https://dashboard.ngrok.com/auth]"
+        lairdb:
+                hostname: lairdb
+                container_name: lair_db
+                image: mongo
+                restart: always
+                volumes:
+                        - $HOME/.lair/mongodb/data/db:/data/db
+                entrypoint: ["mongod", "--bind_ip_all", "--replSet", "rs0", "--logpath", "/dev/null"]
+        lairsetup:
+                hostname: lairsetup
+                container_name: lair_setup
+                image: mongo
+                links:
+                        - lairdb
+                depends_on:
+                        - lairdb
+                volumes:
+                        - ./scripts:/scripts
+                entrypoint: '/scripts/wait-for-it.sh lairdb:27017 -s -- mongo lairdb:27017/admin /scripts/db_init.js'
